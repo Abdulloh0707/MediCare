@@ -1,16 +1,16 @@
-import cors from 'cors';
-import 'dotenv/config';
-import express from 'express';
-import dns from "dns"
-dns.setServers(['1.1.1.1', '8.8.8.8'])
-import { connectDB } from './config/db.js';
+import cors from "cors";
+import "dotenv/config";
+import express from "express";
+import dns from "dns";
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+import { connectDB } from "./config/db.js";
 
 // ⭐ ADD CLERK MIDDLEWARE
 import { clerkMiddleware } from "@clerk/express";
-import appointmentRouter from './routes/appointmentRouter.js';
-import doctorRouter from './routes/doctorRouter.js';
-import serviceRouter from './routes/serviceRoutes.js';
-import serviceAppointmentRouter from './routes/serviceAppointmentRouter.js';
+import appointmentRouter from "./routes/appointmentRouter.js";
+import doctorRouter from "./routes/doctorRouter.js";
+import serviceRouter from "./routes/serviceRoutes.js";
+import serviceAppointmentRouter from "./routes/serviceAppointmentRouter.js";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -18,7 +18,9 @@ const port = process.env.PORT || 4000;
 // ⭐ IMPORTANT: ENABLE CREDENTIALS FOR CLERK COOKIE SESSION
 const allowedOrigins = [
   "http://localhost:5173", // user frontend
-  "http://localhost:5174", // admin dashboard
+  "http://localhost:5174", // admin dashboard,
+  "https://medicare-admin-hazel.vercel.app",
+  "https://medicare-front-sigma.vercel.app",
 ];
 
 app.use(
@@ -36,9 +38,8 @@ app.use(
     credentials: true, // ✅ REQUIRED for cookies / Clerk
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
+  }),
 );
-
 
 // ⭐ Use Clerk middleware globally (does NOT protect routes)
 app.use(clerkMiddleware());
@@ -50,7 +51,6 @@ connectDB();
 
 // Static uploads folder
 
-
 // Routes (unchanged)
 app.use("/api/appointments", appointmentRouter);
 app.use("/api/doctors", doctorRouter);
@@ -58,10 +58,10 @@ app.use("/api/services", serviceRouter);
 app.use("/api/service-appointments", serviceAppointmentRouter);
 
 // Test route
-app.get('/', (req, res) => {
-    res.send('API Working ');
+app.get("/", (req, res) => {
+  res.send("API Working ");
 });
 
 app.listen(port, () => {
-    console.log(`Server Started on http://localhost:${port}`);
+  console.log(`Server Started on http://localhost:${port}`);
 });
